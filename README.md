@@ -26,12 +26,15 @@ A fast, async Python tool that monitors TLS/SSL certificate expiry across multip
 ### Install
 
 ```bash
-# Clone and install in a virtual environment
+# Clone the repo
 git clone https://github.com/prathambiyani/SSL-Certificate-Monitor.git
 cd SSL-Certificate-Monitor
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
+
+# Install globally with pipx (no virtual environment needed)
+pipx install .
 ```
+
+> **Don't have pipx?** Install it with `brew install pipx && pipx ensurepath`, then open a new terminal.
 
 ### Check domains instantly
 
@@ -55,6 +58,7 @@ ssl-monitor check google.com github.com stripe.com
 
 ```bash
 ssl-monitor check google.com github.com --format html --output-file report.html
+open report.html
 ```
 
 ### Scan from a config file
@@ -75,16 +79,22 @@ ssl-monitor scan --config config.yaml --notify
 
 ## Installation
 
-**Requirements:** Python 3.11+
+**Requirements:** Python 3.11+, [pipx](https://pipx.pypa.io)
 
 ```bash
-pip install -e .
+pipx install .
 ```
 
-**Development setup** (includes test dependencies):
+To uninstall:
 
 ```bash
-pip install -e ".[dev]"
+pipx uninstall ssl-certificate-monitor
+```
+
+To upgrade after pulling new changes:
+
+```bash
+pipx reinstall ssl-certificate-monitor
 ```
 
 ---
@@ -208,12 +218,12 @@ docker-compose up
 ## Running Tests
 
 ```bash
+# Install dev dependencies
+pipx inject ssl-certificate-monitor pytest pytest-asyncio pytest-cov ruff
+
+# Run tests
 pytest
-```
 
-Tests mock all network calls — no real SSL connections needed.
-
-```bash
 # With coverage
 pytest --cov=ssl_monitor --cov-report=term-missing
 
