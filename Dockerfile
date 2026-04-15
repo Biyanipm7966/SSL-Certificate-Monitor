@@ -8,13 +8,12 @@ RUN useradd --create-home --shell /bin/bash appuser
 
 WORKDIR /app
 
-# Install dependencies first (layer cache)
-COPY pyproject.toml ./
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir ".[dev]" 2>/dev/null || pip install --no-cache-dir .
-
-# Copy source
+# Copy source before installing so setuptools can find the package directory
 COPY ssl_monitor/ ./ssl_monitor/
+COPY pyproject.toml setup.py ./
+
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir .
 
 # Switch to non-root user
 USER appuser
