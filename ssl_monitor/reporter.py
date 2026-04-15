@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
-from typing import Optional
 
 from jinja2 import Environment, BaseLoader
 from rich.console import Console

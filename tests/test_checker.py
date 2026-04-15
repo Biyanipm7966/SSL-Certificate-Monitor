@@ -3,7 +3,6 @@
 from datetime import datetime, timezone, timedelta
 from unittest.mock import patch
 
-import pytest
 
 from ssl_monitor.checker import check_domain, check_domains, _parse_cert
 from ssl_monitor.models import CertificateResult

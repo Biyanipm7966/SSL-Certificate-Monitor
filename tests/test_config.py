@@ -3,7 +3,7 @@
 import pytest
 from pathlib import Path
 
-from ssl_monitor.config import load_config, DomainConfig
+from ssl_monitor.config import load_config
 
 
 @pytest.fixture

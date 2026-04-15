@@ -28,7 +28,6 @@ err = Console(stderr=True)
 
 def _targets_from_config(cfg_path: str) -> tuple[list[tuple], "object"]:
     """Return (targets_list, config) from a config file."""
-    from .config import Config
     cfg = load_config(cfg_path)
     targets = [(d.host, d.port, d.warn_days, d.critical_days) for d in cfg.domains]
     return targets, cfg
@@ -64,7 +63,7 @@ def _write_output(results: list[CertificateResult], fmt: str, output_file: Optio
     else:
         print_results(results)
         if output_file:
-            err.print(f"[yellow]Note: --output-file is ignored for 'table' format.[/yellow]")
+            err.print("[yellow]Note: --output-file is ignored for 'table' format.[/yellow]")
 
 
 def _exit_code(results: list[CertificateResult]) -> int:
