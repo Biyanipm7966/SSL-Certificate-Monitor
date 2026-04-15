@@ -1,0 +1,21 @@
+services:
+  ssl-monitor:
+    build: .
+    image: ssl-certificate-monitor
+    volumes:
+      # Mount your config file and a reports directory
+      - ./config.yaml:/app/config.yaml:ro
+      - ./reports:/app/reports
+    environment:
+      # Set these in a .env file or your shell — never hard-code secrets
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+    command:
+      - scan
+      - --config
+      - /app/config.yaml
+      - --format
+      - html
+      - --output-file
+      - /app/reports/report.html
+      - --notify

@@ -1,0 +1,36 @@
+# SSL Certificate Monitor — Example Configuration
+# Copy this file to config.yaml and customise it.
+
+# Global alert thresholds (can be overridden per-domain)
+warn_days: 30       # Warn when cert expires in ≤ 30 days
+critical_days: 7    # Critical when cert expires in ≤ 7 days
+
+# Connection timeout in seconds
+timeout: 10
+
+# Domains to monitor
+domains:
+  - google.com
+  - github.com
+  - host: example.com
+    port: 443
+    warn_days: 14       # Override global threshold for this domain
+    critical_days: 3
+
+# Optional: Slack webhook notifications
+# slack:
+#   webhook_url: https://hooks.slack.com/services/XXX/YYY/ZZZ
+#   channel: "#alerts"          # optional — overrides webhook default
+#   notify_on: [warning, critical, error]   # default: all
+
+# Optional: Email notifications (via SMTP)
+# email:
+#   smtp_host: smtp.gmail.com
+#   smtp_port: 587
+#   username: you@gmail.com
+#   password: your-app-password
+#   from_addr: you@gmail.com
+#   to_addrs:
+#     - ops@yourcompany.com
+#   use_tls: true
+#   notify_on: [critical, error]   # default: all
