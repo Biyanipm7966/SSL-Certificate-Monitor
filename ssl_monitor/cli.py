@@ -197,6 +197,35 @@ async def _run_checks(targets: list[tuple], timeout: int) -> list[CertificateRes
         return await check_domains(targets, timeout=timeout)
 
 
+@main.command()
+@click.option("--host", default="127.0.0.1", show_default=True, help="Host to bind to.")
+@click.option("--port", "-p", default=8000, show_default=True, help="Port to listen on.")
+@click.option("--reload", is_flag=True, default=False, help="Auto-reload on code changes (development).")
+def serve(host: str, port: int, reload: bool) -> None:
+    """Start the web dashboard.
+
+    \b
+    Example:
+        ssl-monitor serve
+        ssl-monitor serve --port 8080
+    """
+    try:
+        import uvicorn
+    except ImportError:
+        err.print("[red]Error:[/red] uvicorn is not installed. Run: pip install uvicorn")
+        sys.exit(1)
+
+    console.print(f"\n  [bold green]SSL Certificate Monitor[/bold green] — web dashboard")
+    console.print(f"  Open [link=http://{host}:{port}]http://{host}:{port}[/link] in your browser\n")
+    uvicorn.run(
+        "ssl_monitor.server:app",
+        host=host,
+        port=port,
+        reload=reload,
+        log_level="warning",
+    )
+
+
 async def _send_notifications(results: list[CertificateResult], cfg) -> None:
     if cfg.slack:
         try:

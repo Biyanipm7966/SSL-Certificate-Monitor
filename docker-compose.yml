@@ -1,21 +1,31 @@
 services:
-  ssl-monitor:
-    build: .
-    image: ssl-certificate-monitor
-    volumes:
-      # Mount your config file and a reports directory
-      - ./config.yaml:/app/config.yaml:ro
-      - ./reports:/app/reports
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
     environment:
-      # Set these in a .env file or your shell — never hard-code secrets
-      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-}
-      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
-    command:
-      - scan
-      - --config
-      - /app/config.yaml
-      - --format
-      - html
-      - --output-file
-      - /app/reports/report.html
-      - --notify
+      POSTGRES_USER: ssl_monitor
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ssl_monitor}
+      POSTGRES_DB: ssl_monitor
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ssl_monitor"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ssl_monitor:${POSTGRES_PASSWORD:-ssl_monitor}@db:5432/ssl_monitor
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-me-in-production}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["serve", "--host", "0.0.0.0", "--port", "8000"]
+
+volumes:
+  postgres_data:
